@@ -14,6 +14,12 @@ RUN poetry install  --no-interaction --no-ansi --no-root
 
 COPY ./app ./app
 
+COPY ./static ./static
+
+COPY ./.env ./.env
+
+COPY ./simple_chain.py ./simple_chain.py
+
 RUN poetry install --no-interaction --no-ansi
 
 EXPOSE 8080
