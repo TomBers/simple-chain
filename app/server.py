@@ -13,9 +13,6 @@ app = FastAPI()
 @app.post("/post_text")
 def post_text(myTextArea: Annotated[str, Form()]):
     return simple_chain.invoke({"text": myTextArea})
-    # time.sleep(2)
-    # answer = "I don't know"
-    # return answer + " " + random.randint(1, 29) * "🤖"
 
 
 app.mount("/", StaticFiles(directory="static", html=True), name="app")
