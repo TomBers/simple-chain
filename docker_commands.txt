@@ -5,3 +5,11 @@ docker build . -t simple-chain
 Create a container "test_container" from the image "simple-chain" and run it in detached mode (-d) on port 8080
 
 docker run -d -p 8080:8080 --name test_container simple-chain
+
+ENV vars
+
+Set environment variables
+ON FLY.io - flyctl secrets set OPENAI_API_KEY="YOUR_API_KEY"
+
+Local .env file (in Dockerfile)
+COPY ./.env ./.env
