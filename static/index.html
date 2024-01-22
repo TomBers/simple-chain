@@ -1,4 +1,5 @@
 <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 <style>
     body {
         font-family: sans-serif;
@@ -29,3 +30,11 @@
 <div id="outputDiv">
     <!-- Server response will be placed here -->
 </div>
+
+<div hx-ext="ws" ws-connect="/ws">
+    <form id="form" ws-send>
+        <input name="chat_message">
+    </form>
+</div>
+
+<div id="content"></div>
