@@ -12,12 +12,15 @@ packages = [
 python = "^3.10"
 uvicorn = "^0.23.2"
 langserve = {extras = ["server"], version = ">=0.0.30"}
-langchain_openai = "^0.0.3"
-langchainhub = "^0.1.14"
 pydantic = "<2"
 python-dotenv = "^1.0.0"
 openai = "^1.8.0"
 python-multipart = "^0.0.6"
+
+# New deps used for tools and RAG
+
+langchain_openai = "^0.0.3"
+langchainhub = "^0.1.14"
 bs4 = "^0.0.2"
 chromadb = "^0.4.22"
 wikipedia = "^1.4.0"
