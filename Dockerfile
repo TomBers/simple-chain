@@ -16,7 +16,9 @@ COPY ./app ./app
 
 COPY ./static ./static
 
-COPY ./.env ./.env
+# Set environment variables
+# ON FLY.io - flyctl secrets set OPENAI_API_KEY="YOUR_API_KEY"
+# COPY ./.env ./.env
 
 COPY ./simple_chain.py ./simple_chain.py
 
