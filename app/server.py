@@ -2,20 +2,17 @@ from fastapi import FastAPI, Form
 from typing import Annotated
 from fastapi.staticfiles import StaticFiles
 
-from simple_chain import chain as simple_chain
-import random
-import time
 
+from packages.tool_chain.tool_chain import agent_executor
+import pdb
 
 app = FastAPI()
 
 
 @app.post("/post_text")
 def post_text(myTextArea: Annotated[str, Form()]):
-    return simple_chain.invoke({"text": myTextArea})
-    # time.sleep(2)
-    # answer = "I don't know"
-    # return answer + " " + random.randint(1, 29) * "🤖"
+    print("Welcome to Tools")
+    return agent_executor.invoke({"input": myTextArea}).get("output", "No Output")
 
 
 app.mount("/", StaticFiles(directory="static", html=True), name="app")

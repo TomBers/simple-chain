@@ -13,8 +13,9 @@ question = "What is the price of 1kg of gold in GBP?"
 
 load_dotenv()
 
+# For testing directly
 wolfram = WolframAlphaAPIWrapper()
-print(wolfram.run(question))
+# print(wolfram.run(question))
 
 _prompt = ChatPromptTemplate(input_variables=['agent_scratchpad', 'input'],
                              input_types={'chat_history': typing.List[typing.Union[langchain_core.messages.ai.AIMessage, langchain_core.messages.human.HumanMessage, langchain_core.messages.chat.ChatMessage, langchain_core.messages.system.SystemMessage, langchain_core.messages.function.FunctionMessage, langchain_core.messages.tool.ToolMessage]],
@@ -26,10 +27,6 @@ _tools = load_tools(["wolfram-alpha"])
 
 _llm = ChatOpenAI(model="gpt-3.5-turbo-1106")
 
-agent = create_openai_functions_agent(_llm, _tools, _prompt)
+_agent = create_openai_functions_agent(_llm, _tools, _prompt)
 
-agent_executor = AgentExecutor(agent=agent, tools=_tools, verbose=True)
-
-
-agent_executor.invoke(
-    {"input": question})
+agent_executor = AgentExecutor(agent=_agent, tools=_tools, verbose=True)
