@@ -6,6 +6,8 @@ from langchain.agents import create_sql_agent
 from langchain_community.agent_toolkits import SQLDatabaseToolkit
 from langchain.agents.agent_types import AgentType
 from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import SystemMessage, HumanMessage
 
 from dotenv import load_dotenv
 
@@ -28,5 +30,13 @@ agent_executor = create_sql_agent(
     agent_type=AgentType.ZERO_SHOT_REACT_DESCRIPTION,
 )
 
-agent_executor.invoke(
-    "looking at the statements, who is the mostlikely suspect?")
+prompt = ChatPromptTemplate.from_messages(
+    [
+        SystemMessage(
+            content="Make sure you look statements table especially statements_text column, this contains eye witness testimony and is key to solving the crime."),
+        HumanMessage(
+            content="{input}")
+    ]
+)
+
+agent_executor.invoke({"input": "Who is the most likely suspect?"})
