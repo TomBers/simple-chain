@@ -1,0 +1,15 @@
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+
+<h1>Chat Demo</h1>
+<div hx-ext="ws" ws-connect="/ws">
+    <form id="form" ws-send>
+        <input name="client_id" value={{client_id}} type="hidden">
+        <input name="message">
+        <button type="submit">
+            Submit
+        </button>
+    </form>
+</div>
+
+<div id={{div_id}}></div>

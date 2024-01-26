@@ -1,17 +1,22 @@
-from fastapi import FastAPI, Form
+from fastapi import FastAPI, Form, WebSocket, WebSocketDisconnect
 from fastapi.templating import Jinja2Templates
 from typing import Annotated
 
 
 from simple_chain import chain as simple_chain
 
+from packages.ws_connection_manager.connection_manager import manager
+from packages.ws_connection_manager.ws_response import ws_response
 
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 
 import random
-import time
 
+from coolname import generate_slug
+
+
+div_id = "chat-content"
 
 app = FastAPI()
 
@@ -39,6 +44,18 @@ async def homepage(request: Request):
     )
 
 
+@app.get("/chat", response_class=HTMLResponse)
+async def chat(request: Request):
+    return templates.TemplateResponse(
+        name="chat_ws.html",
+        context={
+            "request": request,
+            "client_id": generate_slug(2),
+            "div_id": div_id
+        },
+    )
+
+
 @app.post("/post_text", response_class=HTMLResponse)
 def post_text(request: Request, myTextArea: Annotated[str, Form()], myTextInput: Annotated[str, Form()] = ""):
     # return simple_chain.invoke({"text": myTextArea})
@@ -53,6 +70,20 @@ def post_text(request: Request, myTextArea: Annotated[str, Form()], myTextInput:
         },
     )
 
+
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    await manager.connect(websocket)
+
+    try:
+        while True:
+            data = await websocket.receive_json()
+            res = ws_response(data["client_id"], data["message"], div_id)
+            await manager.broadcast(res)
+
+    except WebSocketDisconnect:
+        manager.disconnect(websocket)
+        await manager.broadcast(f"Client left the chat")
 
 if __name__ == "__main__":
     import uvicorn
