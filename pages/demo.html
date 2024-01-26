@@ -1,0 +1,32 @@
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<style>
+    body {
+        font-family: sans-serif;
+        background-color: rgb(160, 155, 155);
+    }
+
+    .htmx-indicator {
+        opacity: 0;
+        transition: opacity 500ms ease-in;
+    }
+
+    .htmx-request .htmx-indicator {
+        opacity: 1
+    }
+
+    .htmx-request.htmx-indicator {
+        opacity: 1
+    }
+</style>
+<h1>HTMX Demo</h1>
+<form hx-post="/post_text" hx-swap="afterbegin" hx-target="#outputDiv">
+    <textarea id="myTextArea" name="myTextArea">Test_text</textarea>
+    <input type="text" id="fname" name="myTextInput">
+    <button type="submit" hx-indicator="#spinner">
+        Submit
+    </button>
+    <img id="spinner" class="htmx-indicator" src="/rings.svg" />
+</form>
+<div id="outputDiv">
+    <!-- Server response will be placed here -->
+</div>
