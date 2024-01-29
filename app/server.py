@@ -105,20 +105,24 @@ async def websocket_endpoint(websocket: WebSocket):
 @app.websocket("/chat")
 async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
+    try:
+        cnt = 0
+        while True:
+            data = await websocket.receive_json()
+            print(data)
 
-    cnt = 0
-    while True:
-        data = await websocket.receive_json()
-        print(cnt)
+            # The real one
+            # conversation = conversation_chain.invoke(data["question-input"])
+            # print(conversation)
+            # res = conversation_response(conversation, div_id)
+            conversation = example_responses[cnt]
+            res = test_response(conversation, div_id)
 
-        conversation = conversation_chain.invoke(data["question-input"])
-        # print(conversation)
-        # res = conversation_response(conversation, div_id)
-        # conversation = example_responses[cnt]
-        res = test_response(conversation, div_id)
+            cnt += 1
+            await websocket.send_text(res)
 
-        cnt += 1
-        await websocket.send_text(res)
+    except WebSocketDisconnect:
+        print("Client disconnected")
 
 app.mount("/", StaticFiles(directory="pages", html=True), name="app")
 

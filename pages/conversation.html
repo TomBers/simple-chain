@@ -64,3 +64,10 @@
         </form>
     </div>
 </div>
+
+<script>
+    const input = document.getElementById("question-input");
+    htmx.on("htmx:wsAfterMessage", function (evt) {
+        input.value = "";
+    });
+</script>
