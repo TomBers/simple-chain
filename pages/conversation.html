@@ -1,0 +1,66 @@
+<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+<script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+<link rel="stylesheet" href="/normalise.css" type="text/css">
+<link rel="stylesheet" href="https://unpkg.com/sakura.css/css/sakura-dark.css" type="text/css">
+<style>
+    #container {
+
+        display: flex;
+        flex-direction: column;
+    }
+
+    #chat-window {
+        display: flex;
+        flex-direction: column;
+        min-height: 200px;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    #chat-input {
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .message.human {
+        margin-top: 10px;
+        display: inline-block;
+        text-align: right;
+        color: #6C6F7D;
+    }
+
+    .message.ai {
+        display: inline-block;
+        margin-top: 10px;
+        text-align: left;
+
+    }
+
+    .htmx-indicator {
+        opacity: 0;
+        transition: opacity 500ms ease-in;
+    }
+
+    .htmx-send .htmx-indicator {
+        opacity: 1
+    }
+
+    .htmx-send.htmx-indicator {
+        opacity: 1
+    }
+</style>
+<div id="container">
+    <h1>Chat Demo</h1>
+    <div id={{div_id}}></div>
+    <div id="chat-input" hx-ext="ws" ws-connect="/chat" hx-indicator="#spinner" hx-swap-oob="true">
+        <form id="form" ws-send>
+            <input name="question-input" placeholder="Enter question" id="question-input">
+            <button type="submit" id="submit-question">
+                Submit
+            </button>
+            <img id="spinner" class="htmx-indicator" src="/rings.svg" />
+        </form>
+    </div>
+</div>

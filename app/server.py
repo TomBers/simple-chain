@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Form, WebSocket, WebSocketDisconnect
 from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
 from typing import Annotated
 
 
@@ -11,12 +12,16 @@ from packages.ws_connection_manager.ws_response import ws_response
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse
 
+from packages.conversation.conversation_chain import conversation_chain
+from packages.conversation.conversation_response import conversation_response, test_response, example_responses
+
 import random
+import time
 
 from coolname import generate_slug
 
 
-div_id = "chat-content"
+div_id = "chat-window"
 
 app = FastAPI()
 
@@ -56,6 +61,17 @@ async def chat(request: Request):
     )
 
 
+@app.get("/conversation", response_class=HTMLResponse)
+async def chat(request: Request):
+    return templates.TemplateResponse(
+        name="conversation.html",
+        context={
+            "request": request,
+            "div_id": div_id
+        },
+    )
+
+
 @app.post("/post_text", response_class=HTMLResponse)
 def post_text(request: Request, myTextArea: Annotated[str, Form()], myTextInput: Annotated[str, Form()] = ""):
     # return simple_chain.invoke({"text": myTextArea})
@@ -84,6 +100,27 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         manager.disconnect(websocket)
         await manager.broadcast(f"Client left the chat")
+
+
+@app.websocket("/chat")
+async def websocket_endpoint(websocket: WebSocket):
+    await websocket.accept()
+
+    cnt = 0
+    while True:
+        data = await websocket.receive_json()
+        print(cnt)
+
+        conversation = conversation_chain.invoke(data["question-input"])
+        # print(conversation)
+        # res = conversation_response(conversation, div_id)
+        # conversation = example_responses[cnt]
+        res = test_response(conversation, div_id)
+
+        cnt += 1
+        await websocket.send_text(res)
+
+app.mount("/", StaticFiles(directory="pages", html=True), name="app")
 
 if __name__ == "__main__":
     import uvicorn
